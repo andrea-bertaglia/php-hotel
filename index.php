@@ -93,10 +93,22 @@ $hotels = [
                         }
                         ?>
 
+                        <!-- determino il punteggio per stampare l'icona delle stelle al posto del numero -->
+                        <?php
+                        $vote_avg = "";
+                        for ($i = 0; $i < $cur_elem["vote"]; $i++) {
+                            $vote_avg .= "★";
+                        }
+                        for ($y = 0; $y < (5 - $cur_elem["vote"]); $y++) {
+                            $vote_avg .= "☆";
+                        }
+
+                        ?>
+
                         <?php echo "<td>{$cur_elem["name"]}</td>" ?>
                         <?php echo "<td>{$cur_elem["description"]}</td>" ?>
                         <?php echo "<td>$parking</td>" ?>
-                        <?php echo "<td>{$cur_elem["vote"]}</td>" ?>
+                        <?php echo "<td>$vote_avg</td>" ?>
                         <?php echo "<td>{$cur_elem["distance_to_center"]} km</td>" ?>
                     </tr>
                 <?php } ?>
@@ -105,6 +117,7 @@ $hotels = [
 
 
     </div>
+    <!-- ★☆ -->
 
 </body>
 
