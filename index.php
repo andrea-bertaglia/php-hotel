@@ -37,7 +37,13 @@ $hotels = [
     ],
 
 ];
+// var_dump($hotels);
 
+foreach ($hotels as $cur_elem) {
+    foreach ($cur_elem as $key => $content) {
+        echo "<p>{$key}: {$content}";
+    }
+}
 ?>
 
 <!DOCTYPE html>
