@@ -44,6 +44,39 @@ $hotels = [
 //         echo "<p>{$key}: {$content}";
 //     }
 // }
+
+// var_dump($_GET);
+$parking_filter = null;
+$vote_filter = null;
+
+// var_dump($parking_filter);
+
+if (isset($_GET["parking"])) {
+    $parking_filter = $_GET["parking"];
+    if ($parking_filter === "true") {
+        $parking_filter = true;
+    } else {
+        $parking_filter = false;
+    }
+}
+
+if (isset($_GET["vote"])) {
+    $vote_filter = $_GET["vote"];
+}
+// var_dump($parking_filter);
+
+// inizializzo l'array filtrato
+$hotels_filtered = [];
+
+// filtro i risultati in base ai parametri impostati
+foreach ($hotels as $cur_hotel) {
+    if (($cur_hotel["parking"] === $parking_filter || $parking_filter === null)) {
+        if ($cur_hotel["vote"] >= $vote_filter || $vote_filter === null) {
+            $hotels_filtered[] = $cur_hotel;
+        }
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -65,60 +98,122 @@ $hotels = [
 
     <div class="container">
 
-        <table class="table table-primary table-striped-columns">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Descrizione</th>
-                    <th scope="col">Parcheggio</th>
-                    <th scope="col">Voto</th>
-                    <th scope="col">Distanza dal centro</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- ciclo tutti gli elementi dell'array e prelevo anche l'index per usarlo come identificativo della row della table -->
-                <?php foreach ($hotels as $index => $cur_elem) { ?>
-                    <?php $index++ ?>
+        <div class="py-4 row justify-content-center">
+
+            <form action="index.php" method="GET">
+                <div class="col">
+                    <span class="pe-3 fw-bold">Filtra per parcheggio:</span>
+
+                    <div class="d-inline-block form-check me-3">
+                        <input class="form-check-input" type="radio" value="true" id="park_yes" name="parking">
+                        <label class="form-check-label" for="park_yes">
+                            SI
+                        </label>
+                    </div>
+                    <div class="d-inline-block form-check">
+                        <input class="form-check-input" type="radio" value="false" id="park_no" name="parking">
+                        <label class="form-check-label" for="park_no">
+                            NO
+                        </label>
+                    </div>
+
+                    <span class="ps-5 pe-3 fw-bold">Filtra per voto:</span>
+
+                    <div class="d-inline-block form-check pe-4">
+                        <input class="form-check-input" type="radio" value="1" id="vote_1" name="vote">
+                        <label class="form-check-label" for="vote_1">
+                            ★
+                        </label>
+                    </div>
+                    <div class="d-inline-block form-check pe-4">
+                        <input class="form-check-input" type="radio" value="2" id="vote_2" name="vote">
+                        <label class="form-check-label" for="vote_2">
+                            ★★
+                        </label>
+                    </div>
+
+                    <div class="d-inline-block form-check pe-4">
+                        <input class="form-check-input" type="radio" value="3" id="vote_3" name="vote">
+                        <label class="form-check-label" for="vote_3">
+                            ★★★
+                        </label>
+                    </div>
+
+                    <div class="d-inline-block form-check pe-4">
+                        <input class="form-check-input" type="radio" value="4" id="vote_4" name="vote">
+                        <label class="form-check-label" for="vote_4">
+                            ★★★★
+                        </label>
+                    </div>
+
+                    <div class="d-inline-block form-check pe-4">
+                        <input class="form-check-input" type="radio" value="5" id="vote_5" name="vote">
+                        <label class="form-check-label" for="vote_5">
+                            ★★★★★
+                        </label>
+                    </div>
+
+                    <button class="d-inline-block btn btn-primary badge rounded-pill ms-3" type="submit">Filtra</button>
+                </div>
+            </form>
+
+
+            <table class="table table-primary table-striped-columns mt-4">
+                <thead>
                     <tr>
-                        <th scope="row"><?php echo $index ?></th>
-
-                        <!-- determino se è presente il parcheggio e assegno l'icona (emoji) alla variabile -->
-                        <?php
-                        $parking;
-                        if ($cur_elem["parking"]) {
-                            $parking = "✅";
-                        } else {
-                            $parking = "❌";
-                        }
-                        ?>
-
-                        <!-- determino il punteggio per stampare l'icona delle stelle al posto del numero -->
-                        <?php
-                        $vote_avg = "";
-                        for ($i = 0; $i < $cur_elem["vote"]; $i++) {
-                            $vote_avg .= "★";
-                        }
-                        for ($y = 0; $y < (5 - $cur_elem["vote"]); $y++) {
-                            $vote_avg .= "☆";
-                        }
-
-                        ?>
-
-                        <?php echo "<td>{$cur_elem["name"]}</td>" ?>
-                        <?php echo "<td>{$cur_elem["description"]}</td>" ?>
-                        <?php echo "<td>$parking</td>" ?>
-                        <?php echo "<td>$vote_avg</td>" ?>
-                        <?php echo "<td>{$cur_elem["distance_to_center"]} km</td>" ?>
+                        <th scope="col">#</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Descrizione</th>
+                        <th scope="col">Parcheggio</th>
+                        <th scope="col">Voto</th>
+                        <th scope="col">Distanza dal centro</th>
                     </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <!-- ciclo tutti gli elementi dell'array e prelevo anche l'index per usarlo come identificativo della row della table -->
+                    <?php foreach ($hotels_filtered as $index => $cur_elem) { ?>
+                        <?php if ($cur_elem["parking"] === true) ?>
+                        <?php $index++ ?>
+                        <tr>
+                            <th scope="row"><?php echo $index ?></th>
+
+                            <!-- determino se è presente il parcheggio e assegno l'icona (emoji) alla variabile -->
+                            <?php
+                            $parking;
+                            if ($cur_elem["parking"]) {
+                                $parking = "✅";
+                            } else {
+                                $parking = "❌";
+                            }
+                            ?>
+
+                            <!-- determino il punteggio per stampare l'icona delle stelle al posto del numero -->
+                            <?php
+                            $vote_avg = "";
+                            for ($i = 0; $i < $cur_elem["vote"]; $i++) {
+                                $vote_avg .= "★";
+                            }
+                            for ($y = 0; $y < (5 - $cur_elem["vote"]); $y++) {
+                                $vote_avg .= "☆";
+                            }
+
+                            ?>
+
+                            <!-- filtro i risultati in base ai parametri scelti -->
 
 
-    </div>
-    <!-- ★☆ -->
+                            <?php echo "<td>{$cur_elem["name"]}</td>" ?>
+                            <?php echo "<td>{$cur_elem["description"]}</td>" ?>
+                            <?php echo "<td>$parking</td>" ?>
+                            <?php echo "<td>$vote_avg</td>" ?>
+                            <?php echo "<td>{$cur_elem["distance_to_center"]} km</td>" ?>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
 
+
+        </div>
 </body>
 
 </html>
