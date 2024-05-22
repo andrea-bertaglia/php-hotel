@@ -50,15 +50,15 @@ $parking_filter = null;
 $vote_filter = null;
 
 // var_dump($parking_filter);
+// var_dump($_GET["parking"]);
 
 if (isset($_GET["parking"])) {
     $parking_filter = $_GET["parking"];
-    if ($parking_filter === "true") {
-        $parking_filter = true;
-    } else {
-        $parking_filter = false;
-    }
+    $parking_filter = ($parking_filter === "true") ? true : false;
 }
+
+// var_dump($parking_filter);
+
 
 if (isset($_GET["vote"])) {
     $vote_filter = $_GET["vote"];
@@ -70,7 +70,10 @@ $hotels_filtered = [];
 
 // filtro i risultati in base ai parametri impostati
 foreach ($hotels as $cur_hotel) {
+    // se la variabile $parking_filter è uguale alla chiave parking (true o false) OPPURE se la variabile è null 
     if (($cur_hotel["parking"] === $parking_filter || $parking_filter === null)) {
+
+        // se la variabile $vote_filter è maggiore/uguale alla chiave vote (number) OPPURE se la variabile è null 
         if ($cur_hotel["vote"] >= $vote_filter || $vote_filter === null) {
             $hotels_filtered[] = $cur_hotel;
         }
@@ -196,11 +199,7 @@ foreach ($hotels as $cur_hotel) {
                             for ($y = 0; $y < (5 - $cur_elem["vote"]); $y++) {
                                 $vote_avg .= "☆";
                             }
-
                             ?>
-
-                            <!-- filtro i risultati in base ai parametri scelti -->
-
 
                             <?php echo "<td>{$cur_elem["name"]}</td>" ?>
                             <?php echo "<td>{$cur_elem["description"]}</td>" ?>
